@@ -1,2 +1,4 @@
 secrets.py
-.VSCode
+.vscode
+.idea
+/csv/*
