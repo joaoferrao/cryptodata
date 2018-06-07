@@ -1,0 +1,9 @@
+version: "3.0"
+
+services:
+  pyspark-notebook:
+    image: jupyter/pyspark-notebook
+    volumes:
+      - ${PWD}/data:/home/jovyan/
+    ports:
+      - "8888:8888"

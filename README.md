@@ -14,7 +14,9 @@ source activate crypto
 pip install -r requirements.txt
 ```
 
-TBD
+## Usage
+1. Run main.py and it will download the list of cryptos identified in the CRYPTOS list.
+2. `docker-compose up` to launch a pyspark notebook.
 
 
 
