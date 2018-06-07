@@ -1,22 +1,13 @@
 import pandas as pd
+import logging
 import requests
 import time
 from datetime import datetime, timedelta
 from typing import List
 
 
-# Define which symbols you want to download data from
-CRYPTO: List = ['BTC', 'ETH', 'EOS', 'LTC']
-
-
-# Check if symbol is available
-def check_if_symbol_available(symbol: str) -> bool:
-    r = requests.get("https://www.cryptocompare.com/api/data/coinlist/")
-    data = r.json()["Data"]
-    if symbol in data.keys():
-        return True
-    else:
-        return False
+# Setup which symbols you want to download data from
+CRYPTOS: List = ['BTC', 'ETH', 'EOS', 'LTC']
 
 
 def define_rest_url(symbol: str, currency: str, todate: int) -> str:
@@ -54,7 +45,8 @@ def convert_col_int_to_dt(df: pd.DataFrame, cols: List[str]) -> pd.DataFrame:
     return df
 
 
-def query_all(symbol: str, currency: str, todate: int=None):
+def query_symbol(symbol: str, currency: str, todate: int=None):
+    print("Querying for {}".format(symbol))
     url = define_rest_url(symbol=symbol, currency=currency, todate=todate)
     r, next_todate = get_batch_response(url)
     df = response_to_dataframe(r)
@@ -64,7 +56,22 @@ def query_all(symbol: str, currency: str, todate: int=None):
         df = df.append(response_to_dataframe(r), ignore_index=True)
 
     df = convert_col_int_to_dt(df, ["time"])
-    df.sort_values(by=["time"])
-
+    df.sort_values(by=["time"], inplace=True)
+    df['Symbol'] = symbol
     return df
 
+
+def download_data(list_cryptos: List[str], currency: str, todate: int=None):
+    if len(list_cryptos) == 0:
+        raise Exception
+
+    df = pd.DataFrame()
+    for symbol in list_cryptos:
+        df = df.append(query_symbol(symbol, currency, todate), ignore_index=True)
+
+    df.to_csv(path_or_buf='csv/data.csv', encoding='utf-8', index=False,)
+
+
+if __name__ == '__main__':
+    print("Starting Download")
+    download_data(CRYPTOS, currency='USD')
