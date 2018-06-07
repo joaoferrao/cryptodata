@@ -1,5 +1,5 @@
+import os
 import pandas as pd
-import logging
 import requests
 import time
 from datetime import datetime, timedelta
@@ -54,13 +54,12 @@ def query_symbol(symbol: str, currency: str, todate: int=None):
     while next_todate != 0:
         url = define_rest_url(symbol=symbol, currency=currency, todate=next_todate)
         r, next_todate = get_batch_response(url)
-        df.query('close != 0.0', inplace=True)
         df = df.append(response_to_dataframe(r), ignore_index=True)
 
     df = convert_col_int_to_dt(df, ["time"])
     df.sort_values(by=["time"], inplace=True)
     df['Symbol'] = symbol
-    return df
+    return df.query('close != 0.0')
 
 
 def download_data(list_cryptos: List[str], currency: str, todate: int=None):
@@ -71,7 +70,10 @@ def download_data(list_cryptos: List[str], currency: str, todate: int=None):
     for symbol in list_cryptos:
         df = df.append(query_symbol(symbol, currency, todate), ignore_index=True)
 
-    df.to_csv(path_or_buf='csv/data.csv', encoding='utf-8', index=False,)
+    fp = os.getcwd()
+    par_dir = os.path.dirname(fp)
+    abs_path = os.path.join(fp, 'data', 'data.csv')
+    df.to_csv(path_or_buf=abs_path, encoding='utf-8', index=False,)
 
 
 if __name__ == '__main__':
