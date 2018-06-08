@@ -4,6 +4,6 @@ services:
   pyspark-notebook:
     image: jupyter/pyspark-notebook
     volumes:
-      - ${PWD}/data:/home/jovyan/
+      - ${PWD}:/home/jovyan/
     ports:
       - "8888:8888"

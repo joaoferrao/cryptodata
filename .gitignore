@@ -1,4 +1,6 @@
 secrets.py
 .vscode
 .idea
-/data/*
+data/
+.*/
+spark-warehouse/
