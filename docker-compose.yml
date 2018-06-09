@@ -7,3 +7,4 @@ services:
       - ${PWD}:/home/jovyan/
     ports:
       - "8888:8888"
+    command: start.sh jupyter lab

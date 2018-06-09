@@ -2,22 +2,30 @@
 Simple project to test usage of Crypto Compare's free API for fetching all historic
 data of a specific crypto.
 
+The Docker infra setup will launch a container with Jupyter Labs and PySpark to interface the code and data.
+
 ## Requirements
-- Conda (or miniconda)
+- Docker Engine
+- Docker Compose
 
 ## Setup
 ```bash
 git clone git@github.com:joaoferrao/cryptodata.git 
 cd cryptodata
-conda create -n crypto python=3.6
-source activate crypto
-pip install -r requirements.txt
+docker-compose up  # Access through the URL shown in stdout 
 ```
 
 ## Usage
-1. Run main.py and it will download the list of cryptos identified in the CRYPTOS list.
-2. `docker-compose up` to launch a pyspark notebook.
 
+### Download data
+The first cells of `restructure_raw.ipynb` make usage of the main.py, but if you want to run a new one by default:
+```python
+from main import download_data
+CRYPTOS = ['EOS', 'ETH']
+download_data(CRYPTOS, currency='USD')
+```
+
+After successful running, `data_raw.csv` will be deposited in `crypto_data/data/data_raw.csv`.
 
 
 ## Acknowledgements
