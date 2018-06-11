@@ -47,17 +47,17 @@ def convert_col_int_to_dt(df: pd.DataFrame, cols: List[str]) -> pd.DataFrame:
 
 
 def query_symbol(symbol: str, currency: str, todate: int=None):
-    print("Querying for {}".format(symbol))
+    print("Querying for {}".format(symbol), end='')
     url = define_rest_url(symbol=symbol, currency=currency, todate=todate)
     r, next_todate = get_batch_response(url)
     df = response_to_dataframe(r)
     df.query('close != 0.0', inplace=True)
     while next_todate != 0:
-        print("Still fetching results for {}".format(symbol))
+        print('.', end='')
         url = define_rest_url(symbol=symbol, currency=currency, todate=next_todate)
         r, next_todate = get_batch_response(url)
         df = df.append(response_to_dataframe(r), ignore_index=True)
-
+    print()
     df = convert_col_int_to_dt(df, ["time"])
     df.sort_values(by=["time"], inplace=True)
     df['symbol'] = symbol
