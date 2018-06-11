@@ -180,3 +180,4 @@ secrets.py
 data
 .*/
 spark-warehouse/
+/src/help/
